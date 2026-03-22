@@ -2,11 +2,12 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
-import { Product } from './entities/product.entity';
+
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDTO } from 'src/common/DTO/Pagination';
 import { validate as isUUID } from 'uuid';
+import { ProductImage,Product } from './entities';
 
 
 
@@ -19,6 +20,9 @@ export class ProductsService {
     
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    
+    @InjectRepository(ProductImage)
+    private readonly productImageRepository: Repository<ProductImage>,
   
   ) {}
   //Para salvar tiene que ser igual a nuestros DTO
@@ -26,10 +30,14 @@ export class ProductsService {
     
     //Esto ayuda al slug tendrael nombre de titlo y remplaza comillas
     try {
+      const {images = [], ...productDetails } = createProductDto;
       //Poder crear un producto, lo crea y los salva en la base de datos
-      const producto = this.productRepository.create(createProductDto)
+      const producto = this.productRepository.create({
+        ...productDetails,
+        images: images.map( images => this.productImageRepository.create({ url : images}))
+      })
       await this.productRepository.save(producto)
-      return producto
+      return { ...producto, images: images}
       
       //Esto es nuestro error
     } catch (error) {
@@ -72,7 +80,8 @@ export class ProductsService {
   async update(id: string, updateProductDto: UpdateProductDto) {
     const product = await this.productRepository.preload({
       id: id,
-      ...updateProductDto
+      ...updateProductDto,
+      images: []
     })
     try {
       if(!product) throw new NotFoundException(`El id ${id} no fue encontrado`)

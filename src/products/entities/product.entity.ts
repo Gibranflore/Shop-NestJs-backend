@@ -1,4 +1,5 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { ProductImage } from "./product-image.entity";
 
 // Esto es una tabla en base de datos
 @Entity()
@@ -49,6 +50,14 @@ export class Product {
         default: []
     })
     tags: string[];
+
+    //Esto ayuda hacer una relacion de uno a muchos conectado a otra tabla
+    @OneToMany(
+        () => ProductImage,
+        (productImage) => productImage.product,
+        { cascade: true }
+)
+    images?: ProductImage[];
 
     //Esto ayuda antes de insertar, si el slug no existe sera el titlo y remplaza caracteres
     @BeforeInsert()
