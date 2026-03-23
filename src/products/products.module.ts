@@ -11,6 +11,7 @@ import { ProductsController } from './products.controller';
   imports: [
     //Esto esta creando las tablas en nuestra base de datos
     TypeOrmModule.forFeature([ Product, ProductImage ])
-  ]
+  ],
+  exports:[ProductsService, TypeOrmModule]
 })
 export class ProductsModule {}

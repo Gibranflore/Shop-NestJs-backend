@@ -8,13 +8,22 @@
 1. Cloanar le repositorio
 
 ```yarn install```
+
 3. clonar el arvhivo y renombrarlo a ```.env``` a ```.env.template```
+
 4. Cambiar las variables de entorno
+
 2. Levantar base de datos
+
 ```
 docker-compose up -d
 ```
-5. Levantar la base de datos
+
+
+6. Ejecutar el seed
+
+```
+localhost:3000/api/seed
+```
+7. Levantar el server
 ```yarn run start:dev```
-
-

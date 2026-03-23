@@ -55,9 +55,10 @@ export class Product {
     @OneToMany(
         () => ProductImage,
         (productImage) => productImage.product,
-        { cascade: true }
+        //Eager con el find cargar un producto va a cargar las imagenes
+        { cascade: true, eager: true }
 )
-    images?: ProductImage[];
+    images: ProductImage[];
 
     //Esto ayuda antes de insertar, si el slug no existe sera el titlo y remplaza caracteres
     @BeforeInsert()
